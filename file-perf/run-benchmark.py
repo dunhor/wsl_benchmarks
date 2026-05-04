@@ -79,6 +79,8 @@ def main():
         # Mount a host directory into the container for results output
         host_output_dir = script_dir / "out"
         host_output_dir.mkdir(exist_ok=True)
+        # Use :z on Linux to relabel the volume for SELinux (Fedora/RHEL)
+        vol = f"{host_output_dir}:{CONTAINER_OUTPUT_DIR}:z" if plat == "linux" else f"{host_output_dir}:{CONTAINER_OUTPUT_DIR}"
 
         inner_cmd = [
             "python", "file_io_benchmark.py", args.test_name,
@@ -92,7 +94,7 @@ def main():
             bin_name, CONTAINER_NAME, IMAGE_TAG, inner_cmd,
             cpu=args.cpu, memory=args.memory,
             extra_flags=["-e", "PYTHONUNBUFFERED=1",
-                         "-v", f"{host_output_dir}:{CONTAINER_OUTPUT_DIR}"],
+                         "-v", vol],
         )
         print(f"  $ {' '.join(cmd)}")
         result = subprocess.run(cmd, capture_output=False, text=True)
