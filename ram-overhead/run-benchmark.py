@@ -31,7 +31,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from bench_helpers import (
     add_common_args, build_container_run_cmd, bytes_to_mb, get_container_bin,
     get_platform_name, get_vm_process_name, print_success, run, run_capture,
-    stop_container_system, today_iso, wait_for_vm_exit,
+    start_container_system, stop_container_system, today_iso, wait_for_vm_exit,
 )
 
 IMAGE_TAG = "ram-overhead-bench:latest"
@@ -223,12 +223,14 @@ def main():
         print(f"  → Baseline VM RAM: {baseline_mb} MB\n")
 
         print("=== Step 2: Building container image ===")
+        start_container_system(bin_name)
         run([bin_name, "build", "-t", IMAGE_TAG, str(script_dir)])
         stop_container_system(bin_name)
         wait_for_vm_exit()
         print()
 
         print("=== Step 3: Running idle container ===")
+        start_container_system(bin_name)
         cmd = build_container_run_cmd(
             bin_name, CONTAINER_NAME, IMAGE_TAG,
             ["sleep", "120"],

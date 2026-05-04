@@ -18,7 +18,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from bench_helpers import (
     add_common_args, build_container_run_cmd, get_container_bin,
-    get_platform_name, print_success, run, today_iso,
+    get_platform_name, print_success, run, start_container_system,
+    today_iso,
 )
 
 IMAGE_TAG = "file-perf-bench:latest"
@@ -68,6 +69,7 @@ def main():
     print(f"Iterations: {args.runs}")
     print()
 
+    start_container_system(bin_name)
     run([bin_name, "rm", "-f", CONTAINER_NAME], check=False, quiet=True)
 
     try:

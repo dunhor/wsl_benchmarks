@@ -27,8 +27,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from bench_helpers import (
     add_common_args, build_container_run_cmd, get_container_bin,
-    get_platform_name, print_success, run, stop_container_system,
-    today_iso, wait_for_vm_exit,
+    get_platform_name, print_success, run, start_container_system,
+    stop_container_system, today_iso, wait_for_vm_exit,
 )
 
 IMAGE_TAG = "startup-time-bench:latest"
@@ -60,6 +60,7 @@ def time_cold_start(bin_name, cpu=None, memory=None):
     time.sleep(10)
 
     start = time.perf_counter()
+    start_container_system(bin_name)
     run(cmd)
     elapsed = time.perf_counter() - start
     print(f"  → Cold start: {elapsed:.3f}s\n")
@@ -87,6 +88,7 @@ def main():
 
     try:
         print("=== Step 1: Building container image ===")
+        start_container_system(bin_name)
         run([bin_name, "build", "-t", IMAGE_TAG, str(script_dir)])
         print()
 

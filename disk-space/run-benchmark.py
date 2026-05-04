@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from bench_helpers import (
     add_common_args, build_container_run_cmd, bytes_to_mb, get_container_bin,
     get_platform_name, print_success, run, run_capture,
-    stop_container_system, today_iso, wait_for_vm_exit,
+    start_container_system, stop_container_system, today_iso, wait_for_vm_exit,
 )
 
 IMAGE_TAG = "disk-space-bench:latest"
@@ -120,6 +120,7 @@ def main():
         print()
 
         print("=== Step 1: Building container image ===")
+        start_container_system(bin_name)
         run([bin_name, "build", "-t", IMAGE_TAG, str(script_dir)])
 
         disk_after_build = get_disk_space_used()

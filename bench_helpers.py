@@ -104,6 +104,17 @@ def get_vm_process_name():
     return None
 
 
+def start_container_system(bin_name):
+    """Start the container VM so that subsequent commands can execute.
+
+    macOS:    runs ``container system start``.
+    Windows / Linux: no-op (the VM starts implicitly).
+    """
+    system = platform.system()
+    if system == "Darwin":
+        run([bin_name, "system", "start"], check=True)
+
+
 def stop_container_system(bin_name):
     """Stop the container VM / terminate all sessions for a cold start.
 
